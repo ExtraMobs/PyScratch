@@ -1,9 +1,12 @@
+import pygame
+
+from .container import Container
+from .logic.events import Events
+from .logic.loop import Loop
 from .logic.time import Time
 from .visual.window import Window
-from .logic.loop import Loop
-from .logic.events import Events
-from .container import Container
 
+pygame.font.init()
 
 class Program:
     def __init__(self):
@@ -23,7 +26,7 @@ class Program:
 
     def run(self):
         """Execute the program.
-        """        
+        """
         self.loop.run(self.container, self.window, self.events, self.time)
 
     def stop(self):

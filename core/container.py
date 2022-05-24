@@ -10,6 +10,8 @@ class Container:
         for widget in self.widgets:
             widget.process_events(events)
 
+    def process(self): ...
+
     def draw(self):
         for widget in self.widgets:
             if widget.is_drawable():

@@ -1,5 +1,5 @@
-from ..visual.window import Window
 from ..logic.events import Events
+from ..visual.window import Window
 
 
 class Loop:
@@ -9,6 +9,7 @@ class Loop:
     def run(self, container, window, events, time):
         while self.active:
             events.process_events(container)
+            container.process()
             window.clear_window()
             container.draw()
             window.update_display()

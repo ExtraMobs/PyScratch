@@ -1,6 +1,8 @@
+from os.path import abspath
+
 import pygame
 from core.widget import Widget
-from os.path import abspath
+
 
 class Logo(Widget):
     def __init__(self):
