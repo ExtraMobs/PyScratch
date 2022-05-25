@@ -1,5 +1,6 @@
 import pygame
-from containers.menu.widgets.button_new_start import ButtonNewProject
+from containers.menu.widgets.button_new_project import ButtonNewProject
+from containers.menu.widgets.button_load_project import ButtonLoadProject
 from containers.menu.widgets.logo import Logo
 from core.container import Container
 
@@ -9,12 +10,16 @@ class Menu(Container):
         super().__init__(program)
         self.logo = Logo()
         self.b_newproject = ButtonNewProject()
-        self.add_widgets(self.logo, self.b_newproject)
+        self.b_loadproject = ButtonLoadProject()
+        self.add_widgets(self.logo, self.b_newproject, self.b_loadproject)
 
         self.logo.position.x = self.program.window.get_rect().centerx - self.logo.get_rect().centerx
 
         self.b_newproject.position.x = self.program.window.get_rect().centerx - self.b_newproject.get_rect().centerx
         self.b_newproject.position.y = 300
+        
+        self.b_loadproject.position.x = self.program.window.get_rect().centerx - self.b_loadproject.get_rect().centerx
+        self.b_loadproject.position.y = 400
 
     def process_events(self, events):
         super().process_events(events)
