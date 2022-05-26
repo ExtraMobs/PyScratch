@@ -4,8 +4,8 @@ from core.widget import Widget
 
 
 class Button(Widget):
-    def __init__(self, surface, surface_selected):
-        super().__init__()
+    def __init__(self, program, surface, surface_selected):
+        super().__init__(program)
         self.surface = surface
         self.default_surface = surface
         self.surface_selected = surface_selected

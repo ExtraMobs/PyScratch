@@ -8,9 +8,9 @@ from core.container import Container
 class Menu(Container):
     def __init__(self, program):
         super().__init__(program)
-        self.logo = Logo()
-        self.b_newproject = ButtonNewProject()
-        self.b_loadproject = ButtonLoadProject()
+        self.logo = Logo(program)
+        self.b_newproject = ButtonNewProject(program)
+        self.b_loadproject = ButtonLoadProject(program)
         self.add_widgets(self.logo, self.b_newproject, self.b_loadproject)
 
         self.logo.position.x = self.program.window.get_rect().centerx - self.logo.get_rect().centerx

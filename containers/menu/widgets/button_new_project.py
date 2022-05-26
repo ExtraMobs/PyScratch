@@ -1,9 +1,10 @@
 import pygame
 from button import Button
+from containers.project_editor.project_editor import ProjectEditor
 
 
 class ButtonNewProject(Button):
-    def __init__(self):
+    def __init__(self, program):
         background = pygame.Surface((200, 70))
         background_selected = background.copy()
         background_selected.fill((100, 100, 100))
@@ -13,7 +14,7 @@ class ButtonNewProject(Button):
         t_rect.center = background.get_rect().center
         background.blit(text, t_rect)
         background_selected.blit(text, t_rect)
-        super().__init__(background, background_selected)
+        super().__init__(program, background, background_selected)
 
     def process_events(self, events):
         super().process_events(events)
@@ -21,5 +22,4 @@ class ButtonNewProject(Button):
             if event.type == pygame.MOUSEBUTTONUP:
                 if self.collide_point(event.pos):
                     if event.button == pygame.BUTTON_LEFT:
-                        print(event)
-                        ...
+                        self.program.set_container(ProjectEditor)

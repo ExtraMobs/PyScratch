@@ -27,7 +27,7 @@ class Program:
     def run(self):
         """Execute the program.
         """
-        self.loop.run(self.container, self.window, self.events, self.time)
+        self.loop.run(self, self.window, self.events, self.time)
 
     def stop(self):
         self.loop.active = False

@@ -2,7 +2,8 @@ import pygame
 
 
 class Widget:
-    def __init__(self):
+    def __init__(self, program):
+        self.program = program
         self.surface = pygame.Surface((0, 0))
         self.position = pygame.Vector2()
         self.rect = pygame.Rect(self.position, self.surface.get_size())

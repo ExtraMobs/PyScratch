@@ -3,7 +3,7 @@ from button import Button
 
 
 class ButtonLoadProject(Button):
-    def __init__(self):
+    def __init__(self, program):
         background = pygame.Surface((200, 70))
         background_selected = background.copy()
         background_selected.fill((100, 100, 100))
@@ -13,7 +13,7 @@ class ButtonLoadProject(Button):
         t_rect.center = background.get_rect().center
         background.blit(text, t_rect)
         background_selected.blit(text, t_rect)
-        super().__init__(background, background_selected)
+        super().__init__(program, background, background_selected)
 
     def process_events(self, events):
         super().process_events(events)
