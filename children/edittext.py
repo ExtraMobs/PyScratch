@@ -16,6 +16,7 @@ class EditText(BaseChild):
     ):
         super().__init__()
         self.font = pygame.freetype.Font(path.abspath("monofonto rg.otf"), 20)
+        self.text_buffer = list(text)
         self.text = text
 
         self.fg_color = fg_color
@@ -30,18 +31,30 @@ class EditText(BaseChild):
         )
         self.rect = pygame.FRect(self.surface.get_rect())
 
+        self.need_draw = False
+
         self.draw_text()
 
     def draw_text(self):
         self.surface.fill(self.bg_color)
         self.font.render_to(
-            self.surface, self.__offset, self.text, self.fg_color, self.bg_color
+            self.surface,
+            self.__offset,
+            self.text,
+            self.fg_color,
+            self.bg_color,
         )
 
-    def update(self):
+    def update_focus(self):
         super().update()
 
-        if self.rect.collidepoint(Mouse.pos):
-            for key_event in Keyboard.pressed_in_frame:
-                # if key_event.
-                pass
+        for key_event in Keyboard.pressed_in_frame[pygame.KEYDOWN]:
+            if key_event.key == pygame.K_BACKSPACE:
+                del self.text_buffer[-1]
+                self.need_draw = True
+            elif (char := key_event.unicode).isprintable():
+                self.text_buffer.append(char)
+                self.need_draw = True
+        if self.need_draw:
+            self.text = "".join(self.text_buffer)
+            self.draw_text()

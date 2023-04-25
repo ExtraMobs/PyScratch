@@ -6,9 +6,6 @@ class BaseChild(HierarchicalObject):
     surface = None
     rect = None
 
-    def update(self):
-        pass
-
     def update_focus(self):
         pass
 
