@@ -17,8 +17,19 @@ class List(BaseChild):
         items=(),
     ):
         super().__init__()
+
+        self.surface = Resources.Surface.new(size)
+        self.rect = pygame.FRect(self.surface.get_rect())
+
+        self.bar_rect = pygame.Rect(0, 0, button_size, 0)
         self.items = [
-            MenuButton(item, (size[0], button_size), fg_color, bg_color, expansion)
+            MenuButton(
+                item,
+                (self.rect.width - self.bar_rect.width - 2 * expansion, button_size),
+                fg_color,
+                bg_color,
+                expansion,
+            )
             for item in items
         ]
         self.button_size = button_size
@@ -26,10 +37,6 @@ class List(BaseChild):
         self.fg_color = fg_color
         self.bg_color = bg_color
 
-        self.surface = Resources.Surface.new(size)
-        self.rect = pygame.FRect(self.surface.get_rect())
-
-        self.bar_rect = pygame.Rect(0, 0, button_size, 0)
         self.moving_bar = False
 
         self.offset_y = 0
@@ -45,19 +52,28 @@ class List(BaseChild):
                 self.__need_draw_list = True
 
     def _check_bar(self):
-        if Mouse.get_pressed_in_frame(
-            pygame.BUTTON_LEFT
-        ) and self.bar_rect.collidepoint(Mouse.pos):
-            self.moving_bar = True
-            self.__offset_mouse_y = Mouse.pos.y - self.bar_rect.y
-        elif self.moving_bar:
+        self.bar_rect.x += self.rect.x
+        self.bar_rect.y += self.rect.y
+        if self.rect.collidepoint(Mouse.pos):
             if Mouse.get_pressed(pygame.BUTTON_LEFT):
-                items_height = len(self.items) * self.button_size
-                relative_mouse_pos = Mouse.pos.y - self.__offset_mouse_y
-                mouse_ratio = relative_mouse_pos / self.rect.height
-                self.offset_y = -(mouse_ratio * items_height)
+                if self.moving_bar:
+                    items_height = len(self.items) * self.button_size
+                    relative_mouse_pos = Mouse.pos.y - self.__offset_mouse_y
+                    mouse_ratio = relative_mouse_pos / self.rect.height
+                    self.offset_y = -(mouse_ratio * items_height)
+                elif Mouse.pos.x > self.bar_rect.x:
+                    if self.bar_rect.collidepoint(Mouse.pos):
+                        self.moving_bar = True
+                        self.__offset_mouse_y = Mouse.pos.y - self.bar_rect.y
+                    else:
+                        add_offset_y = self.button_size * 5
+                        if Mouse.pos.y > self.bar_rect.y:
+                            add_offset_y = -add_offset_y
+                        self.offset_y += add_offset_y
             else:
                 self.moving_bar = False
+        self.bar_rect.x -= self.rect.x
+        self.bar_rect.y -= self.rect.y
 
     def update(self):
         self._check_bar()
@@ -84,6 +100,17 @@ class List(BaseChild):
             self.surface.blit(item.surface, items_rect)
             item.rect.y = items_rect.y
             items_rect.y += self.button_size + 2 * item.expasion
+
+        pygame.draw.rect(
+            self.surface,
+            (127, 127, 127),
+            pygame.Rect(
+                self.rect.right - self.bar_rect.width,
+                0,
+                self.bar_rect.width,
+                self.rect.height,
+            ),
+        )
 
         height = len(self.items) * self.button_size
         self.bar_rect.height = self.rect.height / height * self.rect.height
