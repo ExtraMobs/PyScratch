@@ -29,12 +29,11 @@ class MenuButton(BaseChild):
 
         text_rect = self.font.get_rect(text)
         text_rect.topleft = self.__offset
-
-        if size is None:
-            self.fixed_size = False
-            size = (text_rect.right + expansion, text_rect.bottom + expansion)
+        self.fixed_size = size is not None
+        if self.fixed_size:
+            size = (size[0] + 2 * expansion, size[1] + 2 * expansion)
         else:
-            self.fixed_size = True
+            size = (text_rect.right + expansion, text_rect.bottom + expansion)
         self.surface = Resources.Surface.new(size)
         self.rect = pygame.FRect(self.surface.get_rect())
 
@@ -52,6 +51,7 @@ class MenuButton(BaseChild):
                 self.surface = Resources.Surface.new(
                     (rect.right + self.expasion, rect.bottom + self.expasion)
                 )
+                self.rect.size = self.surface.get_size()
         self.surface.fill(self.bg_color)
         self.font.render_to(
             self.surface,
@@ -69,7 +69,7 @@ class MenuButton(BaseChild):
                 self.draw_text()
 
         self.draw_updated = False
-        
+
         if self.rect.collidepoint(Mouse.pos):
             check_color((127, 127, 127))
         else:

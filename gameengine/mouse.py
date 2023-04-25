@@ -3,6 +3,7 @@ import pygame
 
 class Mouse:
     pos = pygame.Vector2(0, 0)
+    rel_pos = pygame.Vector2(0, 0)
     wheel = pygame.Vector2(0, 0)
     in_motion = False
     pressed_event = {}
@@ -30,6 +31,7 @@ class Mouse:
                         cls.pressed[event.button] = False
             if event.type == pygame.MOUSEMOTION:
                 cls.pos.xy = event.pos
+                cls.rel_pos.xy = event.rel
                 cls.in_motion = True
             if event.type == pygame.MOUSEWHEEL:
                 cls.wheel.xy = (event.x, event.y)
