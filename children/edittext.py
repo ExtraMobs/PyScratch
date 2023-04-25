@@ -5,6 +5,7 @@ import pygame
 import pygame.freetype
 
 from gameengine.basechild import BaseChild
+from gameengine.keyboard import Keyboard
 from gameengine.mouse import Mouse
 from gameengine.resources import Resources
 
@@ -36,3 +37,11 @@ class EditText(BaseChild):
         self.font.render_to(
             self.surface, self.__offset, self.text, self.fg_color, self.bg_color
         )
+
+    def update(self):
+        super().update()
+
+        if self.rect.collidepoint(Mouse.pos):
+            for key_event in Keyboard.pressed_in_frame:
+                # if key_event.
+                pass

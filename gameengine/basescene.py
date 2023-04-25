@@ -4,6 +4,7 @@ from gameengine.hierarchicalobject import HierarchicalObject
 
 class BaseScene(HierarchicalObject):
     color_fill = (0, 0, 0)
+    focus = None
 
     def __init__(self):
         super().__init__()
@@ -12,21 +13,19 @@ class BaseScene(HierarchicalObject):
     def start(self):
         pass
 
-    def reset(self):
-        self.children.clear()
-
-    def add_children(self, *children):
-        for child in children:
-            self.children.append(child)
-            child.parent = self
-
-    def remove_child(self, *children):
-        for child in children:
-            self.children.remove(child)
+    def set_focus(self, obj, update_priority=True):
+        if obj in self.children:
+            self.focus = obj
+            if update_priority:
+                self.children.append(self.children.pop(self.children.index(obj)))
 
     def update(self, *args, **kwargs):
-        for child in list(self.children):
-            child.update()
+        super().update(*args, **kwargs)
+        self.update_focus()
+
+    def update_focus(self, *args, **kwargs):
+        if self.focus is not None:
+            self.focus.update_focus()
 
     def draw(self):
         Display.surface.fill(self.color_fill)

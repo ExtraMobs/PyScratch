@@ -1,5 +1,7 @@
 import pygame
 
+from gameengine.keyboard import Keyboard
+
 from .display import Display
 from .mouse import Mouse
 from .window import Window
@@ -23,11 +25,16 @@ class Engine:
         cls.request_quit = len(pygame.event.get(pygame.QUIT)) > 0
 
         Mouse.update(
-            *pygame.event.get(pygame.MOUSEBUTTONDOWN),
-            *pygame.event.get(pygame.MOUSEBUTTONUP),
-            *pygame.event.get(pygame.MOUSEMOTION),
-            *pygame.event.get(pygame.MOUSEWHEEL),
+            pygame.event.get(
+                (
+                    pygame.MOUSEBUTTONDOWN,
+                    pygame.MOUSEBUTTONUP,
+                    pygame.MOUSEMOTION,
+                    pygame.MOUSEWHEEL,
+                )
+            )
         )
+        Keyboard.update(pygame.event.get((pygame.KEYDOWN, pygame.KEYUP)))
 
     @classmethod
     def clock_tick(cls):

@@ -12,8 +12,8 @@ class EditorScene(BaseScene):
                 opt.rect.x = opts[index - 1].rect.right
         self.add_children(*opts)
 
-    def update(self, *args, **kwargs):
-        super().update(*args, **kwargs)
+    def update_focus(self, *args, **kwargs):
+        super().update_focus(*args, **kwargs)
 
         if Engine.request_quit:
             Engine.system_exit()

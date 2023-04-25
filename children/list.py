@@ -2,11 +2,17 @@ import pygame
 
 from children.menubutton import MenuButton
 from gameengine.basechild import BaseChild
+from gameengine.engine import Engine
 from gameengine.mouse import Mouse
 from gameengine.resources import Resources
 
 
 class List(BaseChild):
+    __offset_mouse_y = 0
+
+    moving_bar = False
+    offset_y = 0
+
     def __init__(
         self,
         size,
@@ -37,11 +43,6 @@ class List(BaseChild):
         self.fg_color = fg_color
         self.bg_color = bg_color
 
-        self.moving_bar = False
-
-        self.offset_y = 0
-        self.__offset_mouse_y = 0
-
         self.draw_list()
 
     def _check_items(self):
@@ -54,29 +55,30 @@ class List(BaseChild):
     def _check_bar(self):
         self.bar_rect.x += self.rect.x
         self.bar_rect.y += self.rect.y
-        if self.rect.collidepoint(Mouse.pos):
-            if Mouse.get_pressed(pygame.BUTTON_LEFT):
-                if self.moving_bar:
-                    items_height = len(self.items) * self.button_size
-                    relative_mouse_pos = Mouse.pos.y - self.__offset_mouse_y
-                    mouse_ratio = relative_mouse_pos / self.rect.height
-                    self.offset_y = -(mouse_ratio * items_height)
-                elif Mouse.pos.x > self.bar_rect.x:
-                    if self.bar_rect.collidepoint(Mouse.pos):
-                        self.moving_bar = True
-                        self.__offset_mouse_y = Mouse.pos.y - self.bar_rect.y
-                    else:
-                        add_offset_y = self.button_size * 5
-                        if Mouse.pos.y > self.bar_rect.y:
-                            add_offset_y = -add_offset_y
-                        self.offset_y += add_offset_y
-            else:
-                self.moving_bar = False
+        if Mouse.get_pressed(pygame.BUTTON_LEFT):
+            if self.moving_bar:
+                items_height = len(self.items) * self.button_size
+                relative_mouse_pos = Mouse.pos.y - self.__offset_mouse_y
+                mouse_ratio = relative_mouse_pos / self.rect.height
+                self.offset_y = -(mouse_ratio * items_height)
+            elif Mouse.pos.x > self.bar_rect.x:
+                if self.bar_rect.collidepoint(Mouse.pos):
+                    self.moving_bar = True
+                    self.__offset_mouse_y = Mouse.pos.y - self.bar_rect.y
+                else:
+                    add_offset_y = self.button_size * 500 * Engine.deltatime
+                    if Mouse.pos.y > self.bar_rect.y:
+                        add_offset_y = -add_offset_y
+                    self.offset_y += add_offset_y
+        else:
+            self.moving_bar = False
         self.bar_rect.x -= self.rect.x
         self.bar_rect.y -= self.rect.y
 
     def update(self):
-        self._check_bar()
+        super().update()
+        if self.rect.collidepoint(Mouse.pos):
+            self._check_bar()
         self._check_items()
 
         if not self.moving_bar:

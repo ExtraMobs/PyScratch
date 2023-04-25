@@ -1,15 +1,17 @@
+import pygame
 from children.edittext import EditText
 from children.list import List
 from gameengine.basescene import BaseScene
 from gameengine.display import Display
 from gameengine.engine import Engine
+from gameengine.mouse import Mouse
 
 
 class PathChooseScene(BaseScene):
+    color_fill = (127, 127, 127)
+
     def __init__(self):
         super().__init__()
-
-        self.color_fill = (127, 127, 127)
 
         self.add_children(
             edittext := EditText((Display.width, 25)),
@@ -19,9 +21,15 @@ class PathChooseScene(BaseScene):
             ),
         )
         edittext.rect.bottom = Display.rect.bottom
+        self.set_focus(edittext)
 
     def update(self):
         super().update()
 
+        if Mouse.get_pressed_in_frame(pygame.BUTTON_LEFT):
+            for obj in self.children:
+                if obj.rect.collidepoint(Mouse.pos):
+                    self.set_focus(obj)
+                    break
         if Engine.request_quit:
             Engine.system_exit()

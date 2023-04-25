@@ -18,6 +18,9 @@ class HierarchicalObject:
         for child in list(self.children):
             child.update()
 
+    def reset(self):
+        self.children.clear()
+
     def draw(self):
         for child in self.children:
             if hasattr(child, "draw"):

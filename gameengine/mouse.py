@@ -10,7 +10,7 @@ class Mouse:
     pressed = {}
 
     @classmethod
-    def update(cls, *events):
+    def update(cls, events):
         cls.pressed_event.clear()
         cls.wheel.xy = (0, 0)
         cls.in_motion = False
