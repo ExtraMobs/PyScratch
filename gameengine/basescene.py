@@ -8,6 +8,7 @@ class BaseScene(HierarchicalObject):
 
     def __init__(self):
         super().__init__()
+        self.surface = Display.surface
         self.parent = self
         self.children = []
 

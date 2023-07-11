@@ -11,7 +11,9 @@ class PyScratch:
 
         Window.set_title("PyScratch")
         Window.set_size((1280, 720))
+
         Display.update_display_from_window()
+
         Engine.set_scene(MainScene())
 
     def load_assets(self):

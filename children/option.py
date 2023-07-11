@@ -1,4 +1,5 @@
 import enum
+from dataclasses import dataclass
 
 import pygame
 
@@ -10,10 +11,10 @@ from gameengine.resources import Resources
 CENTERED_DRAWING_MODE = enum.auto()
 
 
+@dataclass
 class OptionAttr:
-    def __init__(self, idle, selected):
-        self.idle_color = idle
-        self.selected_color = selected
+    idle_color: tuple = (150, 150, 150)
+    selected_color: tuple = (100, 100, 100)
 
 
 class Option(BaseChild):
@@ -23,11 +24,11 @@ class Option(BaseChild):
         text,
         text_fg=(0, 0, 0),
         text_bg=None,
-        attr=OptionAttr((150, 150, 150), (100, 100, 100)),
+        attr=OptionAttr(),
         mode=CENTERED_DRAWING_MODE,
     ):
         super().__init__()
-        self.surface = pygame.Surface(rect.size)
+        self.surface = Resources.Surface.new(rect.size)
         self.rect = pygame.FRect(rect)
 
         self.attr = attr
@@ -41,6 +42,10 @@ class Option(BaseChild):
         )
         self.add_children(self.w_text)
         self.set_mode(mode)
+
+    @property
+    def is_selected(self):
+        return self.bg == self.attr.selected_color
 
     def update(self):
         super().update()

@@ -1,5 +1,4 @@
-import pygame
-
+from children.menubar import MenuBar
 from children.option import Option
 from gameengine.basescene import BaseScene
 from gameengine.engine import Engine
@@ -10,8 +9,18 @@ class MainScene(BaseScene):
         super().__init__()
         self.bg = (200, 200, 200)
 
-        option_test = Option(pygame.Rect(10, 10, 100, 50), "Test")
-        self.add_children(option_test)
+        menubar_test = MenuBar(
+            {
+                "a1": 
+                    {"b1": lambda: print("hello world"),
+                     "b2": lambda: print("hello world")},
+                "a2": 
+                    {"b1": lambda: print("hello world"), 
+                     "b2": lambda: print("hello world")},
+            },
+            (self.surface.get_width(), 50),
+        )
+        self.add_children(menubar_test)
 
     def update(self):
         super().update()
