@@ -1,23 +1,16 @@
 from gameengine.display import Display
 from gameengine.engine import Engine
 from gameengine.window import Window
-from scenes.pathchoose import PathChooseScene
-from scenesmanager import ScenesManager
+from scenes.mainscene import MainScene
 
 
-class PyScratch(ScenesManager):
+class PyScratch:
     def __init__(self):
-        super().__init__()
-        self.reset_configs()
-        self.set_scenes("editor", PathChooseScene())
-
-    def reset_configs(self):
         Window.set_size((1280, 720))
         Display.update_display_from_window()
+        Engine.set_scene(MainScene())
 
     def start(self):
-        Engine.set_scene(self.get_scene("editor"))
-
         Engine.start_loop()
 
 
