@@ -16,7 +16,7 @@ class HierarchicalObject:
         for child in children:
             self.children.remove(child)
 
-    def update(self, *args, **kwargs):
+    def update(self):
         for child in list(self.children):
             child.update()
 

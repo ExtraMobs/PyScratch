@@ -10,7 +10,7 @@ class MainScene(BaseScene):
         super().__init__()
         self.bg = (200, 200, 200)
 
-        option_test = Option(pygame.Rect(10, 10, 100, 50), (100, 100, 100), "Test")
+        option_test = Option(pygame.Rect(10, 10, 100, 50), "Test")
         self.add_children(option_test)
 
     def update(self):
