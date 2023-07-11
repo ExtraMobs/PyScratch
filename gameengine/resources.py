@@ -1,4 +1,7 @@
+from os.path import abspath
+
 import pygame
+from io import BytesIO
 
 
 class Resources:
@@ -21,7 +24,7 @@ class Resources:
 
         @staticmethod
         def load_from_file(path, alpha=True):
-            surface = pygame.image.load(path)
+            surface = pygame.image.load(abspath(path))
             try:
                 if alpha:
                     surface = surface.convert_alpha()
@@ -67,3 +70,24 @@ class Resources:
             if alpha:
                 flag |= pygame.SRCALPHA
             return pygame.Surface(size, flag)
+
+    class Files:
+        fonts = {}
+
+        @classmethod
+        def add_from_path(cls, name, path):
+            with open(abspath(path), "rb") as font_file:
+                cls.fonts[name] = font_file.read()
+
+        @classmethod
+        def get(cls, name):
+            return BytesIO(cls.fonts[name])
+
+    class Fonts:
+        @classmethod
+        def load_from_file(cls, size, path):
+            return pygame.font.Font(abspath(path), size)
+
+        @classmethod
+        def get_from_file_buffer(cls, name, size):
+            return pygame.Font(Resources.Files.get(name), int(size))

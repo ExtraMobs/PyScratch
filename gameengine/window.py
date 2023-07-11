@@ -23,6 +23,10 @@ class Window:
         pygame.display.set_caption(title)
 
     @classmethod
+    def set_icon(cls, icon):
+        pygame.display.set_icon(icon)
+
+    @classmethod
     def get_title(cls):
         return pygame.display.get_caption()
 
