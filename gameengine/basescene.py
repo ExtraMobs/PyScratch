@@ -10,9 +10,6 @@ class BaseScene(HierarchicalObject):
         super().__init__()
         self.children = []
 
-    def start(self):
-        pass
-
     def set_focus(self, obj, update_priority=True):
         if obj in self.children:
             self.focus = obj
@@ -20,6 +17,9 @@ class BaseScene(HierarchicalObject):
                 self.children.append(self.children.pop(self.children.index(obj)))
 
     def update(self, *args, **kwargs):
+        # update reference to display surface
+        self.surface = Display.surface 
+
         super().update(*args, **kwargs)
         self.update_focus()
 
@@ -28,5 +28,5 @@ class BaseScene(HierarchicalObject):
             self.focus.update_focus()
 
     def draw(self):
-        Display.surface.fill(self.color_fill)
+        self.surface.fill(self.color_fill)
         super().draw()
