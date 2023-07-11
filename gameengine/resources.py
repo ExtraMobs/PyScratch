@@ -72,16 +72,16 @@ class Resources:
             return pygame.Surface(size, flag)
 
     class Files:
-        fonts = {}
+        files = {}
 
         @classmethod
         def add_from_path(cls, name, path):
             with open(abspath(path), "rb") as font_file:
-                cls.fonts[name] = font_file.read()
+                cls.files[name] = font_file.read()
 
         @classmethod
         def get(cls, name):
-            return BytesIO(cls.fonts[name])
+            return BytesIO(cls.files[name])
 
     class Fonts:
         @classmethod
