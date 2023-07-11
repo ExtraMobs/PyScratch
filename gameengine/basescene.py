@@ -3,11 +3,12 @@ from gameengine.hierarchicalobject import HierarchicalObject
 
 
 class BaseScene(HierarchicalObject):
-    color_fill = (0, 0, 0)
+    bg = (0, 0, 0)
     focus = None
 
     def __init__(self):
         super().__init__()
+        self.parent = self
         self.children = []
 
     def set_focus(self, obj, update_priority=True):
@@ -18,7 +19,7 @@ class BaseScene(HierarchicalObject):
 
     def update(self, *args, **kwargs):
         # update reference to display surface
-        self.surface = Display.surface 
+        self.surface = Display.surface
 
         super().update(*args, **kwargs)
         self.update_focus()
@@ -28,5 +29,5 @@ class BaseScene(HierarchicalObject):
             self.focus.update_focus()
 
     def draw(self):
-        self.surface.fill(self.color_fill)
+        self.surface.fill(self.bg)
         super().draw()

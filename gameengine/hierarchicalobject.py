@@ -2,6 +2,8 @@ from gameengine.display import Display
 
 
 class HierarchicalObject:
+    parent = None
+
     def __init__(self) -> None:
         self.children = []
 
