@@ -56,6 +56,7 @@ class Option(GraphicNode):
         self.surface_selected.blit(surface_text, blit_pos)
 
         self.surface = self.surface_idle
+        self.rect = self.surface.get_rect()
 
 
 class Tree(Node):
@@ -63,15 +64,27 @@ class Tree(Node):
         super().__init__()
         self.set_children_from_nested_tree(nested_tree)
 
-    def set_children_from_nested_tree(self, nested_tree: dict, option=None):
+    def set_children_from_nested_tree(self, nested_tree: dict, parent_option=None):
+        local_options = []
         for key, value in nested_tree.items():
-            new_option = Option(key)
-            if option is None:
+            local_options.append(new_option := Option(key))
+            if parent_option is None:
                 self.add_children(new_option)
             else:
-                option.add_children(new_option)
+                parent_option.add_children(new_option)
 
             # if callable(value):
+        last_opt = None
+        for local_opt in local_options:
+            if parent_option is None:
+                if not last_opt is None:
+                    local_opt.rect.x = last_opt.rect.right
+                    local_opt.rect.y = last_opt.rect.y
+            else:
+                if not last_opt is None:
+                    local_opt.rect.x = last_opt.rect.x
+                    local_opt.rect.y = last_opt.rect.bottom
+            last_opt = local_opt
 
 
 class MenuBar(GraphicNode):
@@ -87,7 +100,7 @@ class MenuBar(GraphicNode):
         self.add_children(
             Tree(
                 {
-                    "aaaaaaaaaaaaaaaaaa1": {"b1": [], "b2": []},
+                    "a1": {"b1": [], "b2": []},
                     "a2": {"b1": [], "b2": []},
                 }
             )
