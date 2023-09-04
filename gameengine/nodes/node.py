@@ -78,3 +78,7 @@ class Node:
     def visible(self, value: bool) -> None:
         for child in self.children:
             child.active = value
+
+    @property
+    def rect(self):
+        return self.parent.rect

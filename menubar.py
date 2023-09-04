@@ -1,3 +1,5 @@
+from inspect import isfunction
+
 import pygame
 
 from gameengine import resources
@@ -18,16 +20,50 @@ class Option(GraphicNode):
     surface_idle = None
     surface_selected = None
 
+    function = None
+
     def __init__(self, data_to_display=None):
-        super().__init__(resources.surface.new((1, 1)))
+        super().__init__(
+            resources.surface.new((self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT))
+        )
         self.text = str(data_to_display)
 
         self.prepare_surface()
 
+    @property
+    def selected(self):
+        return self.surface is self.surface_selected
+
+    @property
+    def idle(self):
+        return self.surface is self.surface_idle
+
+    def set_active_children(self, state: bool):
+        for child in self.children:
+            child.active = state
+
+    def set_visible_children(self, state: bool):
+        for child in self.children:
+            child.visible = state
+
+    def update(self):
+        super().update()
+
+        if self.rect.collidepoint(self.program.devices.mouse.pos):
+            self.surface = self.surface_selected
+        elif self.selected:
+            self.surface = self.surface_idle
+
+        if self.selected:
+            self.set_visible_children(True)
+            self.set_visible_children(True)
+        elif self.idle:
+            self.set_visible_children(False)
+            self.set_visible_children(False)
+
     def prepare_surface(self):
         font = resources.fonts.get_from_file_buffer(20, "MonoFonto")
         surface_text = font.render(self.text, True, (0, 0, 0))
-        surface = resources.surface.new((self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT))
 
         pretended_width = self.DEFAULT_WIDTH - 2 * self.PADING
         pretended_height = self.DEFAULT_HEIGHT - 2 * self.PADING
@@ -47,16 +83,23 @@ class Option(GraphicNode):
 
         blit_pos = (self.PADING, self.PADING)
 
-        self.surface_idle = surface.copy()
+        self.surface_idle = self.surface.copy()
         self.surface_idle.fill(self.COLORS["idle"])
         self.surface_idle.blit(surface_text, blit_pos)
 
-        self.surface_selected = surface.copy()
+        self.surface_selected = self.surface.copy()
         self.surface_selected.fill(self.COLORS["selected"])
         self.surface_selected.blit(surface_text, blit_pos)
 
         self.surface = self.surface_idle
-        self.rect = self.surface.get_rect()
+
+    def update_pos_recursively(self, last_opt=None):
+        if last_opt is None:
+            self.rect.y = 0
+        else:
+            self.rect.y = last_opt.rect.bottom
+        for child in self.children:
+            child.update_pos_recursively(self)
 
 
 class Tree(Node):
@@ -64,27 +107,31 @@ class Tree(Node):
         super().__init__()
         self.set_children_from_nested_tree(nested_tree)
 
-    def set_children_from_nested_tree(self, nested_tree: dict, parent_option=None):
-        local_options = []
+    def set_children_from_nested_tree(
+        self, nested_tree: dict, parent_option=None, top_parent=None
+    ):
         for key, value in nested_tree.items():
-            local_options.append(new_option := Option(key))
+            new_option = Option(key)
             if parent_option is None:
                 self.add_children(new_option)
             else:
                 parent_option.add_children(new_option)
 
-            # if callable(value):
-        last_opt = None
-        for local_opt in local_options:
-            if parent_option is None:
-                if not last_opt is None:
-                    local_opt.rect.x = last_opt.rect.right
-                    local_opt.rect.y = last_opt.rect.y
-            else:
-                if not last_opt is None:
-                    local_opt.rect.x = last_opt.rect.x
-                    local_opt.rect.y = last_opt.rect.bottom
-            last_opt = local_opt
+            if isfunction(value):
+                new_option.function = value
+            elif type(value) is dict:
+                self.set_children_from_nested_tree(
+                    value, new_option, new_option if top_parent is None else top_parent
+                )
+
+        if parent_option is None:
+            last_child = None
+            for child in self.children:
+                if not last_child is None:
+                    child.rect.x = last_child.rect.right
+
+                child.update_pos_recursively()
+                last_child = child
 
 
 class MenuBar(GraphicNode):
@@ -93,10 +140,10 @@ class MenuBar(GraphicNode):
     def __init__(self):
         width = self.program.window.width
 
-        super().__init__(resources.surface.new((width, Option.DEFAULT_HEIGHT)))
+        super().__init__(resources.surface.new(self.program.window.size))
+        self.surface_bar = resources.surface.new((width, Option.DEFAULT_HEIGHT))
 
-        self.surface.fill(self.COLOR)
-
+        self.surface_bar.fill(self.COLOR)
         self.add_children(
             Tree(
                 {
@@ -105,3 +152,8 @@ class MenuBar(GraphicNode):
                 }
             )
         )
+
+    def draw(self):
+        self.surface.fill((0, 0, 0, 0))
+        self.surface.blit(self.surface_bar, (0, 0))
+        super().draw()
