@@ -1,5 +1,3 @@
-from inspect import isfunction
-
 import pygame
 
 from gameengine import resources
@@ -7,11 +5,11 @@ from gameengine.nodes.graphicnode import GraphicNode
 from gameengine.nodes.node import Node
 
 
-class Option(GraphicNode):
+class MenuBarOption(GraphicNode):
     COLORS = {
         "idle": (150, 150, 150),
         "selected": (100, 100, 100),
-        "expansible": (150, 100, 150),
+        "expansible": (150, 125, 150),
     }
 
     top = False
@@ -60,7 +58,7 @@ class Option(GraphicNode):
         if self.active:
             if self.top:
                 if self.priority == 0:
-                    menubar = self.parent.parent
+                    menubar = self.parent
                     self.rect.x = menubar.rect.x
                     self.rect.y = menubar.rect.y
                 else:
@@ -148,57 +146,36 @@ class Option(GraphicNode):
         self.surface = self.surface_idle
 
     def draw(self):
-        super().draw(
-            self.parent.parent.surface if self.top else self.program.display.surface
-        )
+        super().draw(self.parent.surface if self.top else self.program.display.surface)
 
 
-class Tree(Node):
-    def __init__(self, nested_tree: dict) -> None:
-        super().__init__()
-        self.set_data_from_nested_tree(nested_tree)
+class MenuBar(GraphicNode):
+    COLOR = (170, 170, 170)
+
+    def __init__(self, nested_data: dict):
+        width = self.program.window.width
+
+        super().__init__(resources.surface.new((width, MenuBarOption.DEFAULT_HEIGHT)))
+        self.set_data_from_nested_tree(nested_data)
 
     def set_data_from_nested_tree(
         self, nested_tree: dict, parent_option=None, top_parent=None
     ):
         for key, value in nested_tree.items():
-            new_option = Option(key)
+            new_option = MenuBarOption(key)
             new_option.top = top_parent is None
             if parent_option is None:
                 self.add_children(new_option)
             else:
                 parent_option.add_children(new_option)
 
-            if isfunction(value):
+            if callable(value):
                 new_option.function = value
             elif type(value) is dict:
                 self.set_data_from_nested_tree(
                     value, new_option, new_option if new_option.top else top_parent
                 )
             new_option.prepare_surface()
-
-
-class MenuBar(GraphicNode):
-    COLOR = (170, 170, 170)
-
-    def __init__(self):
-        width = self.program.window.width
-
-        super().__init__(resources.surface.new((width, Option.DEFAULT_HEIGHT)))
-        self.add_children(
-            Tree(
-                {
-                    "a1": {
-                        "b1": {"c1": lambda: print("c1"), "c2": lambda: print("c2")},
-                        "b2": {"c1": lambda: print("c1"), "c2": lambda: print("c2")},
-                    },
-                    "a2": {
-                        "b1": {"c1": lambda: print("c1"), "c2": lambda: print("c2")},
-                        "b2": {"c1": lambda: print("c1"), "c2": lambda: print("c2")},
-                    },
-                }
-            )
-        )
 
     def draw(self):
         self.surface.fill(self.COLOR)
