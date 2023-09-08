@@ -89,7 +89,11 @@ class Node:
         tree = f",\n{spaces}".join(
             [child.get_children_tree(__index + 1) for child in self.children]
         )
-        return spaces + repr(self) + f" [\n{spaces}" + f"{tree}" + f"\n{spaces}]"
+        if len(self.children) == 0:
+            list_children = f" []"
+        else:
+            list_children = f" [\n{spaces}" + f"{tree}" + f"\n{spaces}]"
+        return spaces + repr(self) + list_children
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__} | {id(self)}"

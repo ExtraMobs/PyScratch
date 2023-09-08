@@ -13,6 +13,8 @@ class Option(GraphicNode):
         "selected": (100, 100, 100),
     }
 
+    top = False
+
     DEFAULT_WIDTH = 200
     DEFAULT_HEIGHT = 50
     PADING = 10
@@ -48,6 +50,9 @@ class Option(GraphicNode):
 
     def update(self):
         super().update()
+
+        # if not self.top:
+        # print(self.parent.rect)
 
         if self.rect.collidepoint(self.program.devices.mouse.pos):
             self.surface = self.surface_selected
@@ -104,6 +109,7 @@ class Tree(Node):
     ):
         for key, value in nested_tree.items():
             new_option = Option(key)
+            new_option.top = top_parent is None
             if parent_option is None:
                 self.add_children(new_option)
             else:
