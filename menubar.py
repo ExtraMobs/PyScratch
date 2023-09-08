@@ -57,44 +57,47 @@ class Option(GraphicNode):
     def update(self):
         super().update()
 
-        index = self.parent.children.index(self)
-        if self.top:
-            if index == 0:
-                menubar = self.parent.parent
-                self.rect.x = menubar.rect.x
-                self.rect.y = menubar.rect.y
-            else:
-                last_opt = self.parent.children[index - 1]
-                self.rect.x = last_opt.rect.right
-                self.rect.y = last_opt.rect.y
-        else:
-            if index == 0:
-                if self.parent.top:
-                    self.rect.x = self.parent.rect.x
-                    self.rect.y = self.parent.rect.bottom
+        if self.active:
+            if self.top:
+                if self.priority == 0:
+                    menubar = self.parent.parent
+                    self.rect.x = menubar.rect.x
+                    self.rect.y = menubar.rect.y
                 else:
-                    self.rect.x = self.parent.rect.right
-                    self.rect.y = self.parent.rect.y
+                    last_opt = self.parent.children[self.priority - 1]
+                    self.rect.x = last_opt.rect.right
+                    self.rect.y = last_opt.rect.y
             else:
-                last_opt = self.parent.children[index - 1]
-                self.rect.x = last_opt.rect.x
-                self.rect.y = last_opt.rect.bottom
+                if self.priority == 0:
+                    if self.parent.top:
+                        self.rect.x = self.parent.rect.x
+                        self.rect.y = self.parent.rect.bottom
+                    else:
+                        self.rect.x = self.parent.rect.right
+                        self.rect.y = self.parent.rect.y
+                else:
+                    last_opt = self.parent.children[self.priority - 1]
+                    self.rect.x = last_opt.rect.x
+                    self.rect.y = last_opt.rect.bottom
+            if self.rect.collidepoint(self.program.devices.mouse.pos):
+                if self.program.devices.mouse.get_pressed_in_frame(pygame.BUTTON_LEFT):
+                    if not self.function is None:
+                        self.function()
+                self.surface = self.surface_selected
+                self.__tree_selected = True
+            else:
+                self.__tree_selected = False
 
-        if self.rect.collidepoint(self.program.devices.mouse.pos):
-            self.surface = self.surface_selected
-            self.__tree_selected = True
-        else:
-            self.__tree_selected = False
+            if self.selected and not self.tree_selected:
+                self.surface = self.surface_idle
+                self.__tree_selected = False
 
-        if self.selected and not self.tree_selected:
-            self.surface = self.surface_idle
-
-        if self.selected:
-            self.set_active_children(True)
-            self.set_visible_children(True)
-        elif self.idle:
-            self.set_active_children(False)
-            self.set_visible_children(False)
+            if self.selected:
+                self.set_active_children(True)
+                self.set_visible_children(True)
+            elif self.idle:
+                self.set_active_children(False)
+                self.set_visible_children(False)
 
     def prepare_surface(self):
         font = resources.fonts.get_from_file_buffer(20, "MonoFonto")
