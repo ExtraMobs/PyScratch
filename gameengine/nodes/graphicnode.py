@@ -94,8 +94,10 @@ class GraphicNode(ShadingNode):
             self.__update_manager.update()
             super().update()
 
-    def draw(self):
+    def draw(self, surface=None):
         if self.visible:
+            if surface is None:
+                surface = self.parent.surface
             self.shader_manager.draw(self.surface)
             self.hitbox.update(self.surface, self.rect)
             if self.bg is not None:
@@ -103,7 +105,7 @@ class GraphicNode(ShadingNode):
 
             super().draw()
 
-            self.parent.surface.blit(
+            surface.blit(
                 self.surface,
                 (self.rect.x + self.offset.x, self.rect.y + self.offset.y),
             )

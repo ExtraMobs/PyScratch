@@ -71,7 +71,7 @@ class Node:
     @visible.setter
     def visible(self, value: bool) -> None:
         for child in self.children:
-            child.active = value
+            child.visible = value
 
     @property
     def path(self):

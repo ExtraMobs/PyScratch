@@ -51,19 +51,37 @@ class Option(GraphicNode):
     def update(self):
         super().update()
 
-        # if not self.top:
-        # print(self.parent.rect)
-
+        index = self.parent.children.index(self)
+        if self.top:
+            if index == 0:
+                menubar = self.parent.parent
+                self.rect.x = menubar.rect.x
+                self.rect.y = menubar.rect.y
+            else:
+                last_opt = self.parent.children[index - 1]
+                self.rect.x = last_opt.rect.right
+                self.rect.y = last_opt.rect.y
+        else:
+            if index == 0:
+                if self.parent.top:
+                    self.rect.x = self.parent.rect.x
+                else:
+                    self.rect.x = self.parent.rect.right
+                self.rect.y = self.parent.rect.bottom
+            else:
+                last_opt = self.parent.children[index - 1]
+                self.rect.x = last_opt.rect.x
+                self.rect.y = last_opt.rect.bottom
         if self.rect.collidepoint(self.program.devices.mouse.pos):
             self.surface = self.surface_selected
         elif self.selected:
             self.surface = self.surface_idle
 
         if self.selected:
-            self.set_visible_children(True)
+            self.set_active_children(True)
             self.set_visible_children(True)
         elif self.idle:
-            self.set_visible_children(False)
+            self.set_active_children(False)
             self.set_visible_children(False)
 
     def prepare_surface(self):
@@ -98,6 +116,11 @@ class Option(GraphicNode):
 
         self.surface = self.surface_idle
 
+    def draw(self):
+        super().draw(
+            self.parent.parent.surface if self.top else self.program.display.surface
+        )
+
 
 class Tree(Node):
     def __init__(self, nested_tree: dict) -> None:
@@ -129,10 +152,7 @@ class MenuBar(GraphicNode):
     def __init__(self):
         width = self.program.window.width
 
-        super().__init__(resources.surface.new(self.program.window.size))
-        self.surface_bar = resources.surface.new((width, Option.DEFAULT_HEIGHT))
-
-        self.surface_bar.fill(self.COLOR)
+        super().__init__(resources.surface.new(size := (width, Option.DEFAULT_HEIGHT)))
         self.add_children(
             Tree(
                 {
@@ -143,6 +163,5 @@ class MenuBar(GraphicNode):
         )
 
     def draw(self):
-        self.surface.fill((0, 0, 0, 0))
-        self.surface.blit(self.surface_bar, (0, 0))
+        self.surface.fill(self.COLOR)
         super().draw()
