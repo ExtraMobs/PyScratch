@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pygame
-
 if TYPE_CHECKING:
     from gameengine.generics import Program
 
@@ -58,10 +56,6 @@ class Node:
             child.draw()
 
     @property
-    def surface(self) -> pygame.Surface:
-        return self.parent.surface
-
-    @property
     def active(self) -> bool:
         return bool(sum(child.active for child in self.children))
 
@@ -80,5 +74,22 @@ class Node:
             child.active = value
 
     @property
-    def rect(self):
-        return self.parent.rect
+    def path(self):
+        if self.parent is None:
+            return None
+        else:
+            return self.parent.path + str(self.parent.children.index(self))
+
+    @property
+    def surface(self):
+        return self.parent.surface
+
+    def get_children_tree(self, __index=0):
+        spaces = (__index * 4) * " "
+        tree = f",\n{spaces}".join(
+            [child.get_children_tree(__index + 1) for child in self.children]
+        )
+        return spaces + repr(self) + f" [\n{spaces}" + f"{tree}" + f"\n{spaces}]"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__} | {id(self)}"

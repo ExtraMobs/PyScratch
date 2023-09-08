@@ -11,6 +11,7 @@ class PyScratch(Program):
         self.load_assets()
 
         self.set_scene(MainScene())
+        print(self.scene.get_children_tree())
 
     def load_assets(self):
         resources.files.add_from_path("MonoFonto", "assets/monofonto rg.otf")

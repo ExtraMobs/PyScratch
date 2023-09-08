@@ -1,3 +1,5 @@
+import pygame
+
 from gameengine.nodes.graphicnode import ShadingNode
 
 
@@ -11,3 +13,7 @@ class Scene(ShadingNode):
     def draw(self):
         self.surface.fill(self.bg)
         super().draw()
+
+    @property
+    def surface(self) -> pygame.Surface:
+        return self.program.display.surface

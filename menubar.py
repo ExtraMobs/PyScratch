@@ -93,21 +93,13 @@ class Option(GraphicNode):
 
         self.surface = self.surface_idle
 
-    def update_pos_recursively(self, last_opt=None):
-        if last_opt is None:
-            self.rect.y = 0
-        else:
-            self.rect.y = last_opt.rect.bottom
-        for child in self.children:
-            child.update_pos_recursively(self)
-
 
 class Tree(Node):
     def __init__(self, nested_tree: dict) -> None:
         super().__init__()
-        self.set_children_from_nested_tree(nested_tree)
+        self.set_data_from_nested_tree(nested_tree)
 
-    def set_children_from_nested_tree(
+    def set_data_from_nested_tree(
         self, nested_tree: dict, parent_option=None, top_parent=None
     ):
         for key, value in nested_tree.items():
@@ -120,18 +112,9 @@ class Tree(Node):
             if isfunction(value):
                 new_option.function = value
             elif type(value) is dict:
-                self.set_children_from_nested_tree(
+                self.set_data_from_nested_tree(
                     value, new_option, new_option if top_parent is None else top_parent
                 )
-
-        if parent_option is None:
-            last_child = None
-            for child in self.children:
-                if not last_child is None:
-                    child.rect.x = last_child.rect.right
-
-                child.update_pos_recursively()
-                last_child = child
 
 
 class MenuBar(GraphicNode):
