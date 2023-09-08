@@ -7,6 +7,8 @@ if TYPE_CHECKING:
 class Node:
     parent: "Node"
     program: "Program"
+    active = True
+    visible = True
 
     def __init__(self, *children) -> None:
         """
@@ -29,16 +31,6 @@ class Node:
             self.children.append(child)
             child.parent = self
 
-    def remove_children(self, *children) -> None:
-        """
-        Remove children from node.
-
-        Args:
-            children (Iterable): child nodes
-        """
-        for child in children:
-            child.kill()
-
     def kill(self) -> None:
         """
         Kill yourself. Killing a node removes it from its parent.
@@ -47,38 +39,26 @@ class Node:
             self.parent.children.remove(self)
 
     def update(self) -> None:
-        if not self.program.request_quit:
-            for child in list(self.children):
-                child.update()
+        if self.active:
+            if not self.program.request_quit:
+                for child in list(self.children):
+                    child.update()
 
     def draw(self) -> None:
-        for child in self.children:
-            child.draw()
+        if self.visible:
+            for child in self.children:
+                child.draw()
 
     @property
-    def active(self) -> bool:
-        return bool(sum(child.active for child in self.children))
-
-    @active.setter
-    def active(self, value: bool) -> None:
-        for child in self.children:
-            child.active = value
-
-    @property
-    def visible(self) -> bool:
-        return bool(sum(child.visible for child in self.children))
-
-    @visible.setter
-    def visible(self, value: bool) -> None:
-        for child in self.children:
-            child.visible = value
+    def priority(self):
+        return self.parent.children.index(self)
 
     @property
     def path(self):
-        if self.parent is None:
-            return None
+        if self.parent is None or not Node in self.parent.__class__.__mro__:
+            return ()
         else:
-            return self.parent.path + str(self.parent.children.index(self))
+            return *self.parent.path, self.priority
 
     @property
     def surface(self):
@@ -86,13 +66,13 @@ class Node:
 
     def get_children_tree(self, __index=0):
         spaces = (__index * 4) * " "
-        tree = f",\n{spaces}".join(
+        tree = f",\n".join(
             [child.get_children_tree(__index + 1) for child in self.children]
         )
         if len(self.children) == 0:
             list_children = f" []"
         else:
-            list_children = f" [\n{spaces}" + f"{tree}" + f"\n{spaces}]"
+            list_children = " [\n" + f"{tree}" + f"\n{spaces}]"
         return spaces + repr(self) + list_children
 
     def __repr__(self) -> str:

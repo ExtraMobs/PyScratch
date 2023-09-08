@@ -76,13 +76,14 @@ class Option(GraphicNode):
             self.surface = self.surface_selected
         elif self.selected:
             self.surface = self.surface_idle
-
         if self.selected:
             self.set_active_children(True)
             self.set_visible_children(True)
         elif self.idle:
             self.set_active_children(False)
             self.set_visible_children(False)
+        if "b" in self.text:
+            print(self.path, self.text)
 
     def prepare_surface(self):
         font = resources.fonts.get_from_file_buffer(20, "MonoFonto")
