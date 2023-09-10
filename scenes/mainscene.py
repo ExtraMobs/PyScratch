@@ -14,9 +14,7 @@ class UI(Node):
 
     def __init__(self) -> None:
         self.menubar = MainMenuBar()
-        self.lateral_bar = LateralBar(
-            (300, self.program.display.height), MainLateralBarButton()
-        )
+        self.lateral_bar = MainLateralBar(self.menubar)
         super().__init__(self.lateral_bar, self.menubar)
 
 
@@ -45,10 +43,15 @@ class MainLateralBarButton(LateralBarButton):
 
 
 class MainLateralBar(LateralBar):
-    def __init__(self):
-        menubar = self.program.scene.ui.menubar
-        super().__init__((300, self.program.display.height - menubar.rect.height))
+    def __init__(self, menubar):
+        super().__init__(
+            (300, self.program.display.height - menubar.rect.height),
+            MainLateralBarButton(),
+        )
         self.rect.y = menubar.rect.bottom
+        self.surface.fill((160, 160, 160))
+
+        self.default_speed = 2000
 
     def update(self):
         super().update()

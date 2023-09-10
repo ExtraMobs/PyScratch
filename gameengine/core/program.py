@@ -18,8 +18,12 @@ class TimeManager:
     clock: pygame.Clock
 
     def __init__(self, target_framerate: int) -> None:
-        self.set_framerate(target_framerate)
-        self.delta = 1 / target_framerate
+        self.set_framerate(
+            pygame.display.get_current_refresh_rate()
+            if target_framerate is None
+            else target_framerate
+        )
+        self.delta = 1 / self.target_framerate
         self.clock = pygame.time.Clock()
 
     def set_framerate(self, new_framerate: int) -> None:
@@ -49,7 +53,7 @@ class Program:
     scene: Scene
 
     def __init__(
-        self, window: Window, display: Display = None, framerate: int = 30
+        self, window: Window, display: Display = None, framerate: int = None
     ) -> None:
         self.request_quit = False
         Node.program = self

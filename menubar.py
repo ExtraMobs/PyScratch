@@ -2,7 +2,6 @@ import pygame
 
 from gameengine import resources
 from gameengine.nodes.graphicnode import GraphicNode
-from gameengine.nodes.node import Node
 
 
 class MenuBarOption(GraphicNode):
