@@ -1,11 +1,60 @@
+import pygame
+
+from gameengine import resources
+from gameengine.nodes.node import Node
 from gameengine.nodes.scene import Scene
+from lateralbar import LateralBar, LateralBarButton
 from menubar import MenuBar
 from project import Project
 
 
-class MainMenuBar(MenuBar):
-    project = None
+class UI(Node):
+    menubar = None
+    lateral_bar = None
 
+    def __init__(self) -> None:
+        self.menubar = MainMenuBar()
+        self.lateral_bar = LateralBar(
+            (300, self.program.display.height), MainLateralBarButton()
+        )
+        super().__init__(self.lateral_bar, self.menubar)
+
+
+class MainLateralBarButton(LateralBarButton):
+    def __init__(self):
+        super().__init__(resources.surface.new((50, 50)))
+        border_radius = 10
+        pygame.draw.rect(
+            self.surface,
+            (160, 160, 160),
+            pygame.Rect((0, 0), self.rect.size),
+            border_top_right_radius=border_radius,
+            border_bottom_right_radius=border_radius,
+        )
+
+        padding = 10
+        pygame.draw.polygon(
+            self.surface,
+            (50, 50, 50),
+            [
+                (padding, padding),
+                (self.rect.width - padding, self.rect.centery),
+                (padding, self.rect.bottom - 10),
+            ],
+        )
+
+
+class MainLateralBar(LateralBar):
+    def __init__(self):
+        menubar = self.program.scene.ui.menubar
+        super().__init__((300, self.program.display.height - menubar.rect.height))
+        self.rect.y = menubar.rect.bottom
+
+    def update(self):
+        super().update()
+
+
+class MainMenuBar(MenuBar):
     def __init__(self):
         super().__init__(
             {
@@ -16,20 +65,21 @@ class MainMenuBar(MenuBar):
             }
         )
 
-        self.project = Project()
-
     def new_project(self):
-        self.project.kill()
-        self.project = Project()
-        self.add_children(self.project)
-        print(id(self.project))
+        project = self.program.scene.project
+        project.reset()
+        print(id(project))
 
     def open_project(self):
         print("implementar o carregamento de um projeto já existente")
 
 
 class MainScene(Scene):
+    project = None
+    ui = None
+
     def __init__(self) -> None:
         self.bg = (200, 200, 200)
-
-        super().__init__(MainMenuBar())
+        self.project = Project()
+        self.ui = UI()
+        super().__init__(self.ui, self.project)
