@@ -1,19 +1,7 @@
 import pygame
 
 from gameengine import resources
-from gameengine.nodes.node import Node
 from lateralbar import LateralBar, LateralBarButton
-from menubar import MenuBar
-
-
-class UI(Node):
-    menubar = None
-    lateral_bar = None
-
-    def __init__(self) -> None:
-        self.menubar = MainMenuBar()
-        self.lateral_bar = MainLateralBar(self.menubar)
-        super().__init__(self.lateral_bar, self.menubar)
 
 
 class MainLateralBarButton(LateralBarButton):
@@ -53,23 +41,3 @@ class MainLateralBar(LateralBar):
 
     def update(self):
         super().update()
-
-
-class MainMenuBar(MenuBar):
-    def __init__(self):
-        super().__init__(
-            {
-                "Projeto": {
-                    "Novo Projeto": self.new_project,
-                    "Abrir Projeto": self.open_project,
-                },
-            }
-        )
-
-    def new_project(self):
-        project = self.program.scene.project
-        project.reset()
-        print(id(project))
-
-    def open_project(self):
-        print("implementar o carregamento de um projeto já existente")
