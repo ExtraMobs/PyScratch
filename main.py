@@ -1,7 +1,7 @@
 from gameengine import resources
 from gameengine.core.program import Program
 from gameengine.core.window import Window
-from scenes.mainscene import MainScene
+from scenes.main import MainScene
 
 
 class PyScratch(Program):

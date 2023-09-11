@@ -2,10 +2,8 @@ import pygame
 
 from gameengine import resources
 from gameengine.nodes.node import Node
-from gameengine.nodes.scene import Scene
 from lateralbar import LateralBar, LateralBarButton
 from menubar import MenuBar
-from project import Project
 
 
 class UI(Node):
@@ -75,14 +73,3 @@ class MainMenuBar(MenuBar):
 
     def open_project(self):
         print("implementar o carregamento de um projeto já existente")
-
-
-class MainScene(Scene):
-    project = None
-    ui = None
-
-    def __init__(self) -> None:
-        self.bg = (200, 200, 200)
-        self.project = Project()
-        self.ui = UI()
-        super().__init__(self.ui, self.project)
