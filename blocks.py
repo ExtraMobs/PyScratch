@@ -1,3 +1,4 @@
+from gameengine.misc.shader import FakeShader
 from gameengine.nodes.graphicnode import GraphicNode
 
 
@@ -14,3 +15,20 @@ class Block(GraphicNode):
             self.rect.y = block_above_ref.rect.bottom
 
         super().update()
+
+
+class ColorMAShader(FakeShader):
+    def __init__(self, color_m) -> None:
+        super().__init__()
+        self.color_m = color_m
+
+    def draw(self, target_surf):
+        pass
+
+
+class SimpleBlock(Block):
+    def __init__(self, color):
+        super().__init__()
+
+    def __mount_block_surface(self, color):
+        pass

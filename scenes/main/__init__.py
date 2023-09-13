@@ -9,7 +9,8 @@ class MainScene(Scene):
     ui = None
 
     def __init__(self) -> None:
-        self.bg = (200, 200, 200)
         self.project = Project()
         self.ui = UI()
         super().__init__(self.ui, self.project)
+
+        self.set_background_color((200, 200, 200))

@@ -7,9 +7,7 @@ class ShadingManager(Node):
     def draw(self, surf: pygame.Surface) -> None:
         for shader in self.children:
             shader.draw(
-                pygame.surfarray.pixels2d(surf),
-                pygame.surfarray.pixels3d(surf),
-                pygame.surfarray.pixels_alpha(surf),
+                surf,
             )
 
 
@@ -26,5 +24,5 @@ class ShadingNode(Node):
         self.shader_manager.update()
 
     def draw(self) -> None:
-        super().draw()
         self.shader_manager.draw(self.surface)
+        super().draw()

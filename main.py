@@ -18,7 +18,7 @@ class PyScratch(Program):
     def load_assets(self):
         resources.files.add_from_path("MonoFonto", "assets/monofonto rg.otf")
 
-        block_default_color = (127, 127, 127)
+        block_default_color = (255, 255, 255)
 
         width, height = 100, 50
         surface = resources.surface.new((width, height))

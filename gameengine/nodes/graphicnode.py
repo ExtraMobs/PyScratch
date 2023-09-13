@@ -96,15 +96,13 @@ class GraphicNode(ShadingNode):
 
     def draw(self, surface=None):
         if self.visible:
-            if surface is None:
-                surface = self.parent.surface
             self.shader_manager.draw(self.surface)
             self.hitbox.update(self.surface, self.rect)
-            if self.bg is not None:
-                self.surface.fill(self.bg)
 
             super().draw()
 
+            if surface is None:
+                surface = self.parent.surface
             surface.blit(
                 self.surface,
                 (self.rect.x + self.offset.x, self.rect.y + self.offset.y),
