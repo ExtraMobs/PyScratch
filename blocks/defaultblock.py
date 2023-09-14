@@ -1,8 +1,7 @@
-import numpy
 import pygame
 
+from fakeshaders import ColorMAShader
 from gameengine import resources
-from gameengine.misc.shader import FakeShader
 from gameengine.nodes.graphicnode import GraphicNode
 from gameengine.nodes.node import Node
 
@@ -10,7 +9,7 @@ from gameengine.nodes.node import Node
 class DefaultBlock(Node):
     def __init__(self, color):
         self.rect = pygame.FRect(0, 0, 0, 0)
-        self.color_shader = ColorMShader(color)
+        self.color_shader = ColorMAShader(color, [0, 0, 0, 0])
 
         self.start_image = GraphicNode(resources.surface.get("block_start"))
         self.start_image.add_shader(self.color_shader)
@@ -76,26 +75,3 @@ class DefaultBlock(Node):
         self.text_image.rect.y = 2.5 + self.start_image.rect.y
 
         super().update()
-
-
-class ColorMShader(FakeShader):
-    def __init__(self, color_m, cache_size=3) -> None:
-        super().__init__()
-        self.color_m = [color / 255 for color in color_m]
-        self.cache_size = cache_size
-        self.current_surf_ids = []
-
-    def draw(self, target_surf):
-        if not (surf_id := id(target_surf)) in self.current_surf_ids:
-            self.current_surf_ids.append(surf_id)
-            if len(self.current_surf_ids) > self.cache_size:
-                del self.current_surf_ids[0]
-
-            surf_array = pygame.surfarray.pixels3d(target_surf)
-            numpy.multiply(
-                surf_array,
-                self.color_m,
-                surf_array,
-                casting="unsafe",
-            )
-            print(self.color_m)

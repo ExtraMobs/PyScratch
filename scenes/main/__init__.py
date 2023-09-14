@@ -12,10 +12,10 @@ class MainScene(Scene):
         self.project = Project()
         self.ui = UI()
         super().__init__(
-            self.ui,
-            self.project,
             c1 := CallBlock("test"),
             c2 := CallBlock("test extended"),
+            self.project,
+            self.ui,
         )
         c1.rect.topleft = 100, 100
         c2.rect.topleft = 100, 200
