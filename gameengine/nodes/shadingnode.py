@@ -20,8 +20,8 @@ class ShadingNode(Node):
         self.shader_manager.add_children(*new_shaders)
 
     def update(self) -> None:
-        super().update()
         self.shader_manager.update()
+        super().update()
 
     def draw(self) -> None:
         self.shader_manager.draw(self.surface)

@@ -1,4 +1,4 @@
-from blocks import Block
+from blocks.defaultblock import DefaultBlock
 from gameengine import resources
 from gameengine.nodes.node import Node
 
@@ -7,7 +7,7 @@ class Module(Node):
     def __init__(self, name):
         self.name = name
 
-        self.starter_block = Block(resources)
+        self.starter_block = DefaultBlock(resources)
 
         super().__init__(self.starter_block)
 

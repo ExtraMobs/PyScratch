@@ -1,7 +1,7 @@
+from blocks.callblock import CallBlock
 from gameengine.nodes.scene import Scene
 from project import Project
-
-from .ui import UI
+from scenes.main.ui import UI
 
 
 class MainScene(Scene):
@@ -11,6 +11,12 @@ class MainScene(Scene):
     def __init__(self) -> None:
         self.project = Project()
         self.ui = UI()
-        super().__init__(self.ui, self.project)
-
+        super().__init__(
+            self.ui,
+            self.project,
+            c1 := CallBlock("test"),
+            c2 := CallBlock("test extended"),
+        )
+        c1.rect.topleft = 100, 100
+        c2.rect.topleft = 100, 200
         self.set_background_color((200, 200, 200))
