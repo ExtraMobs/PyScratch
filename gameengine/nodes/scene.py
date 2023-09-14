@@ -19,10 +19,17 @@ class Scene(ShadingNode):
         super().__init__(*children)
         self.parent = self.program.display
         self.bg_shader = BackgroundColor((0, 0, 0))
-        self.add_shader(self.bg_shader)
 
     def set_background_color(self, target_color):
         self.bg_shader.target_color = target_color
+
+    def update(self) -> None:
+        self.bg_shader.update()
+        super().update()
+
+    def draw(self):
+        self.bg_shader.draw(self.surface)
+        super().draw()
 
     @property
     def surface(self) -> pygame.Surface:
