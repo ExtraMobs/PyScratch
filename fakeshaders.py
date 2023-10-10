@@ -43,4 +43,3 @@ class ColorMAShader(FakeShader):
                     surf_array_alpha,
                     casting="unsafe",
                 )
-            print(self.color_m, self.color_a)

@@ -7,4 +7,4 @@ class CallBlock(DefaultBlock):
 
         super().__init__((255, 127, 0))
 
-        self.update_images(func_name)
+        self.update_io_data(func_name)

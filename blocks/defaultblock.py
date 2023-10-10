@@ -26,26 +26,32 @@ class DefaultBlock(Node):
             self.start_image, self.mid_image, self.end_image, self.text_image
         )
 
-    def update_images(self, text):
+    def update_io_data(self, text):
         font = resources.fonts.get_from_file_buffer(35, "MonoFonto")
 
         self.text_image.surface = text_surf = font.render(text, True, (255, 255, 255))
 
-        width_sum = self.start_image.rect.width + self.end_image.rect.width
+        default_padding = 5
+        double_padding = 2 * default_padding
 
-        if (text_w := text_surf.get_width()) > width_sum - 10:
+        width_limit = (
+            self.start_image.rect.width + self.end_image.rect.width - double_padding
+        )
+
+        if (text_w := text_surf.get_width()) > width_limit:
             self.mid_image.visible = True
             self.mid_image.active = True
+
+            mid_surf_width = text_w - width_limit + default_padding
+            mid_surf_height = self.start_image.surface.get_height()
+
             self.mid_image.surface = mid_surf = resources.surface.new(
-                mid_surf_size := (
-                    text_w - (width_sum - 10) + 5,
-                    self.start_image.surface.get_height(),
-                )
+                (mid_surf_width, mid_surf_height)
             )
             mid_surf.fill(
                 (255, 255, 255),
                 pygame.Rect(
-                    (0, 0), (mid_surf_size[0], mid_surf_size[1] - mid_surf_size[1] / 10)
+                    (0, 0), (mid_surf_width, mid_surf_height - mid_surf_height / 10)
                 ),
             )
         else:

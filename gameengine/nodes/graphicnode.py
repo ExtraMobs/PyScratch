@@ -96,7 +96,6 @@ class GraphicNode(ShadingNode):
 
     def draw(self, surface=None):
         if self.visible:
-            self.shader_manager.draw(self.surface)
             self.hitbox.update(self.surface, self.rect)
 
             super().draw()
