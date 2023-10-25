@@ -16,7 +16,7 @@ class LateralBarButton(GraphicNode):
 
         mouse_device = self.program.devices.mouse
         if self.rect.collidepoint(mouse_device.pos):
-            if mouse_device.get_pressed_in_frame(pygame.BUTTON_LEFT):
+            if mouse_device.get_pressed_down_in_frame(pygame.BUTTON_LEFT):
                 self.parent.start_movement()
 
         super().update()

@@ -8,28 +8,39 @@ from gameengine.generics import Button, Key, KeySate, Program, Vector2
 class Mouse:
     pos: Vector2
     rel_pos: Vector2
-    __pressed_in_frame: list
-    __button_index: dict
+    __pressed_down_in_frame: list
+    __pressed_up_in_frame: list
+    __button_states: dict
 
     def __init__(self, program: "Program") -> None:
         self.display = program.display
-        self.__pressed_in_frame = []
+        self.__pressed_down_in_frame = []
+        self.__pressed_up_in_frame = []
         self.pos = pygame.Vector2(0, 0)
         self.rel_pos = pygame.Vector2(0, 0)
-        self.__button_index = {
-            pygame.BUTTON_LEFT: 0,
-            pygame.BUTTON_MIDDLE: 1,
-            pygame.BUTTON_RIGHT: 3,
+        self.__button_states = {
+            pygame.BUTTON_LEFT: False,
+            pygame.BUTTON_MIDDLE: False,
+            pygame.BUTTON_RIGHT: False,
+            pygame.BUTTON_WHEELUP: False,
+            pygame.BUTTON_WHEELDOWN: False,
         }
 
     def update(self) -> None:
         down = pygame.event.get(pygame.MOUSEBUTTONDOWN)
-        # up = pygame.event.get(pygame.MOUSEBUTTONUP)
+        up = pygame.event.get(pygame.MOUSEBUTTONUP)
 
-        self.__pressed_in_frame.clear()
+        self.__pressed_down_in_frame.clear()
         for event in down:
-            self.__pressed_in_frame.append(event.button)
+            self.__pressed_down_in_frame.append(event.button)
+            self.__button_states[event.button] = True
 
+        self.__pressed_up_in_frame.clear()
+        for event in up:
+            self.__pressed_up_in_frame.append(event.button)
+            self.__button_states[event.button] = False
+
+        self.rel_pos.xy = (0, 0)
         for event in pygame.event.get(pygame.MOUSEMOTION):
             self.pos.xy = (
                 event.pos[0] / self.display.scale.x,
@@ -41,10 +52,13 @@ class Mouse:
             )
 
     def get_pressed(self, button: Button) -> bool:
-        return pygame.mouse.get_pressed()[self.__button_index[button]]
+        return self.__button_states[button]
 
-    def get_pressed_in_frame(self, button: Button) -> bool:
-        return button in self.__pressed_in_frame
+    def get_pressed_down_in_frame(self, button: Button) -> bool:
+        return button in self.__pressed_down_in_frame
+
+    def get_pressed_up_in_frame(self, button: Button) -> bool:
+        return button in self.__pressed_up_in_frame
 
 
 class KeyBoard:
@@ -72,7 +86,7 @@ class KeyBoard:
             self.keys[event.key] = None
 
     def get_pressed(self, key: Key) -> bool:
-        return self.get_key_event(key) is not None
+        return not self.get_key_event(key) is None
 
     def get_key_event(self, key: Key) -> bool:
         return self.keys.get(key, None)

@@ -33,7 +33,7 @@ class UpdateManager:
     def update(self):
         animation_updated = False
         if is_same_surf := (self.surface_id == id(self.node.surface)):
-            if self.node.animation is not None:
+            if not self.node.animation is None:
                 self.node.animation.update()
                 if (
                     animation_updated := (

@@ -11,6 +11,8 @@ class DefaultBlock(Node):
         self.rect = pygame.FRect(0, 0, 0, 0)
         self.color_shader = ColorMAShader(color, [0, 0, 0, 0])
 
+        self.drag_offset = False
+
         self.start_image = GraphicNode(resources.surface.get("block_start"))
         self.start_image.add_shader(self.color_shader)
 
@@ -58,13 +60,14 @@ class DefaultBlock(Node):
             self.mid_image.visible = False
             self.mid_image.active = False
 
-    def set_position(self, new_pos):
-        self.start_image.rect.topleft = new_pos
-
     def update(self):
-        if self.priority - 4 > 0:
-            block_above_ref = self.parent.children[self.priority - 1]
-            self.set_position(block_above_ref.rect.bottomleft)
+        if self.program.scene.block_manager.drag_block is None:
+            if self.program.devices.mouse.get_pressed_down_in_frame(pygame.BUTTON_LEFT):
+                if self.rect.collidepoint(self.program.devices.mouse.pos):
+                    self.drag_offset = (
+                        self.program.devices.mouse.pos - self.rect.topleft
+                    )
+                    self.program.scene.block_manager.drag_block = self
 
         self.start_image.rect.topleft = self.rect.topleft
 

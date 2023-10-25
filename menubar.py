@@ -77,7 +77,9 @@ class MenuBarOption(GraphicNode):
                     self.rect.x = last_opt.rect.x
                     self.rect.y = last_opt.rect.bottom
             if self.rect.collidepoint(self.program.devices.mouse.pos):
-                if self.program.devices.mouse.get_pressed_in_frame(pygame.BUTTON_LEFT):
+                if self.program.devices.mouse.get_pressed_down_in_frame(
+                    pygame.BUTTON_LEFT
+                ):
                     if not self.function is None:
                         self.function()
                 self.surface = self.surface_selected

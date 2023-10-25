@@ -35,7 +35,7 @@ class Node:
         """
         Kill yourself. Killing a node removes it from its parent.
         """
-        if self.parent is not None:
+        if not self.parent is None:
             self.parent.children.remove(self)
 
     def update(self) -> None:
