@@ -11,7 +11,7 @@ class LateralBarButton(GraphicNode):
         super().__init__(image)
 
     def update(self):
-        self.rect.x = self.parent.rect.right
+        self.rect.left = self.parent.rect.right
         self.rect.centery = self.parent.rect.centery
 
         mouse_device = self.program.devices.mouse
@@ -25,6 +25,27 @@ class LateralBarButton(GraphicNode):
         super().draw(self.parent.parent.surface)
 
 
+class RectChecker:
+    lateral_bar = None
+
+    def __init__(self, lateral_bar):
+        self.lateral_bar = lateral_bar
+
+    @property
+    def is_inside_screen(self):
+        if self.lateral_bar.orientation == self.lateral_bar.LEFT:
+            return self.lateral_bar.rect.left >= 0
+        elif self.orientation == self.lateral_bar.RIGHT:
+            return self.lateral_bar.rect.right <= self.lateral_bar.parent.rect.right
+
+    @property
+    def is_off_screen(self):
+        if self.lateral_bar.orientation == self.lateral_bar.LEFT:
+            return self.lateral_bar.rect.right <= 0
+        elif self.lateral_bar.orientation == self.RIGHT:
+            return self.rect.left >= self.parent.rect.right
+
+
 class LateralBar(GraphicNode):
     RIGHT = enum.auto()
     LEFT = enum.auto()
@@ -32,6 +53,9 @@ class LateralBar(GraphicNode):
     default_speed = 1000
     speed = 0
     opened = False
+    orientation = None
+
+    rect_checker = None
 
     def __init__(self, size, button):
         super().__init__(resources.surface.new(size))
@@ -39,34 +63,25 @@ class LateralBar(GraphicNode):
 
         self.add_children(button)
 
-    def __check_off_the_lateral(self):
-        if self.orientation == self.LEFT:
-            return self.rect.x >= 0
-        elif self.orientation == self.RIGHT:
-            return self.rect.right <= self.parent.rect.width
-
-    def __check_off_the_screen(self):
-        if self.orientation == self.LEFT:
-            return self.rect.right <= 0
-        elif self.orientation == self.RIGHT:
-            return self.rect.x >= self.parent.rect.width
+        self.rect_checker = RectChecker(self)
 
     def update(self):
         if self.in_movement:
-            self.rect.x += self.speed * self.program.time.delta
-            if (self.opened and self.__check_off_the_screen()) or (
-                not self.opened and self.__check_off_the_lateral()
+            self.rect.left += self.speed * self.program.time.delta
+            if (self.opened and self.rect_checker.is_off_screen) or (
+                not self.opened and self.rect_checker.is_inside_screen
             ):
                 self.stop_movement()
+
         if not self.in_movement:
             if self.orientation == self.LEFT:
                 if self.opened:
-                    self.rect.x = 0
+                    self.rect.left = 0
                 else:
-                    self.rect.x = -self.rect.width
+                    self.rect.left = -self.rect.width
             elif self.orientation == self.RIGHT:
                 if self.opened:
-                    self.rect.x = self.program.display.width
+                    self.rect.left = self.program.display.width
                 else:
                     self.rect.right = self.parent.rect.width
         super().update()
