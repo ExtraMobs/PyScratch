@@ -20,6 +20,8 @@ class MainScene(Scene):
             self.ui,
         )
 
-        self.block_manager.add_blocks(c := CallBlock("test"))
+        self.block_manager.add_blocks(
+            c := CallBlock("a", "faculdade", "está", "me", "matando")
+        )
         c.rect.topleft = (100, 100)
         self.set_background_color((200, 200, 200))
