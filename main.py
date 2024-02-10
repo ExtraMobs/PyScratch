@@ -1,18 +1,14 @@
-from assets import load_assets
-from gameengine.core.program import Program
-from gameengine.core.window import Window
-from scenes.main import MainScene
+import pygame
 
+window = pygame.display.set_mode((720, 405))
 
-class PyScratch(Program):
-    def __init__(self):
-        super().__init__(Window("PyScratch", (1280, 720)))
+clock = pygame.time.Clock()
 
-        load_assets()
+framerate = 60
 
-        self.set_scene(MainScene())
-        print(self.scene.get_children_tree())
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            raise SystemExit(0)
 
-
-if __name__ == "__main__":
-    PyScratch().start_loop()
+    clock.tick(framerate)
