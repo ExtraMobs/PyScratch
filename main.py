@@ -1,16 +1,41 @@
 import pygame
+from collections import defaultdict
 
 
-class ProgramLoop:
-    def __init__(self, window_manager, framerate_manager):
+class Program:
+    def __init__(self, window_manager, event_manager, framerate_manager):
+        self.event_manager = event_manager
+        self.window_manager = window_manager
+        self.framerate_manager = framerate_manager
+
+    def run_loop(self):
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    raise SystemExit(0)
+            self.event_manager.process()
 
-            window_manager.update_display()
+            self.window_manager.update_display()
+            self.framerate_manager.process()
 
-            framerate_manager.process()
+
+class EventManager:
+    def __init__(self):
+        self.__data = defaultdict(lambda: None)
+
+    def process(self):
+        self.__data.clear()
+        for event in pygame.event.get():
+            self.__data[event.type] = event
+
+    def get(self, type):
+        return self.__data[type]
+
+
+class DrawManager:
+    def __init__(self):
+        self.to_draw = []
+
+    def process(self, window):
+        for drawable_object in self.to_draw:
+            pass
 
 
 class WindowManager:
@@ -29,10 +54,14 @@ class FramerateManager:
 
     def __init__(self, target_framerate):
         self.clock = pygame.time.Clock()
-        self.target_framerate = 60
+        self.target_framerate = target_framerate
 
     def process(self):
         self.clock.tick(self.target_framerate)
 
 
-ProgramLoop(WindowManager(pygame.Window("PyScratch", (720, 405))), FramerateManager(60))
+Program(
+    WindowManager(pygame.Window("PyScratch", (720, 405))),
+    EventManager(),
+    FramerateManager(60),
+)
