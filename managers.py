@@ -43,6 +43,7 @@ class WindowManager:
 
     def update_display(self):
         self.pygame_window.flip()
+        self.display_surface.fill((0, 0, 0))
 
 
 class FramerateManager:
