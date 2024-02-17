@@ -1,11 +1,12 @@
 import pygame
-from managers import EventManager, FramerateManager, WindowManager
-from objetcs import Container
-from program import Program
+from pygame_backend.managers import EventManager, FramerateManager, WindowManager
+from pygame_backend.objects import Container
+
+from pygame_backend.program import Program
 
 
 class PyScratch(Program):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             WindowManager(pygame.Window(self.__class__.__name__, (720, 405))),
             EventManager(),
@@ -16,14 +17,14 @@ class PyScratch(Program):
 
         self.run_loop()
 
-    def set_scene(self, scene):
+    def set_scene(self, scene: Container) -> None:
         super().set_scene(scene)
 
-        scene.unpack(self)
+        scene.unpack()
 
 
 class EditorScene(Container):
-    def unpack(self):
+    def unpack(self) -> None:
         pass
 
 
