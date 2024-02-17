@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Any, Dict, Iterable
 
 type typeProgram = __Program
 
@@ -13,12 +13,19 @@ type typeDrawableObject = __DrawableObject
 type typeContainer = __Container
 
 type typePygameWindow = __PygameWindow
+type typePygameSurface = __PygameSurface
+type typePygameEvent = __PygameEvent
 
 type typeIterableProcessableObjects = Iterable[
     typeProcessableObject | typeDrawableObject
 ]
 
+type typeTupleRGB = tuple[int, int, int]
 
+type typeRecursiveDict = Dict[Any, Dict | Any]
+
+from pygame import Event as __PygameEvent
+from pygame import Surface as __PygameSurface
 from pygame import Window as __PygameWindow
 
 from .managers import DrawManager as __DrawManager

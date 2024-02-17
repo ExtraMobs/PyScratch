@@ -1,37 +1,33 @@
 import pygame
-from pygame_backend.generics import typeIterableProcessableObjects
 
+from pygame_backend.generics import typeIterableProcessableObjects, typeProgram
 from pygame_backend.managers import (EventManager, FramerateManager,
                                      WindowManager)
-from pygame_backend.objects import Container, DrawableObject, ProcessableObject
+from pygame_backend.objects import Container
 from pygame_backend.program import Program
+from ui.menubar import MenuBar
 
 
 class PyScratch(Program):
     def __init__(self) -> None:
         super().__init__(
-            WindowManager(pygame.Window(self.__class__.__name__, (720, 405))),
+            WindowManager(pygame.Window(self.__class__.__name__, (1280, 720))),
             EventManager(),
             FramerateManager(60),
         )
 
-        self.set_scene(EditorScene(self))
+        self.window_manager.background_color = (200, 200, 200)
 
-        self.run_loop()
+        self.set_scene(EditorScene(self))
 
 
 class EditorScene(Container):
-    def __init__(self, program: Program) -> None:
+    def __init__(self, program: typeProgram) -> None:
         super().__init__(program)
-        print(self.draw_manager.to_draw)
 
-        self.clear()
-
-        print(self.draw_manager.to_draw)
+    def unpack(self) -> typeIterableProcessableObjects:
+        return (MenuBar(self.program),)
 
 
-    def unpack(self) -> typeIterableProcessableObjects: 
-        return ProcessableObject(self.program), DrawableObject(self.program)
-
-
-PyScratch()
+if __name__ == "__main__":
+    PyScratch().run_loop()

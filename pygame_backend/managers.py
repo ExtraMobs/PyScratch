@@ -2,7 +2,8 @@ from collections import defaultdict
 
 import pygame
 
-from pygame_backend.generics import typePygameWindow
+from pygame_backend.generics import (typePygameEvent, typePygameSurface,
+                                     typePygameWindow, typeTupleRGB)
 
 from .enums import CustomEvents
 
@@ -17,7 +18,7 @@ class EventManager:
         for event in pygame.event.get():
             self.__data[event.type] = event
 
-    def get(self, event_type) -> pygame.Event:
+    def get(self, event_type) -> typePygameEvent:
         return self.__data[event_type]
 
 
@@ -40,6 +41,10 @@ class DrawManager:
 
 
 class WindowManager:
+    pygame_window: typePygameWindow
+    display_surface: typePygameSurface
+    background_color: typeTupleRGB
+
     def __init__(self, pygame_window: typePygameWindow) -> None:
         self.pygame_window = pygame_window
         self.display_surface = pygame_window.get_surface()
@@ -53,7 +58,7 @@ class WindowManager:
 class FramerateManager:
     @property
     def framerate(self) -> float:
-        self.clock.get_fps()
+        return self.clock.get_fps()
 
     def __init__(self, target_framerate: int) -> None:
         self.clock = pygame.time.Clock()
