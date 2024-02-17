@@ -1,12 +1,7 @@
 import pygame
-from .generics import (
-    typeDrawManager,
-    typeEventManager,
-    typeFramerateManager,
-    typeProcessManager,
-    typeWindowManager,
-    typeProgram,
-)
+
+from .generics import (typeDrawManager, typeEventManager, typeFramerateManager,
+                       typeProcessManager, typeProgram, typeWindowManager)
 
 
 class ProcessableObject:

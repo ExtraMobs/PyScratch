@@ -1,5 +1,6 @@
-import pygame
 import enum
+
+import pygame
 
 
 class CustomEvents(enum.IntEnum):

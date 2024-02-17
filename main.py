@@ -1,7 +1,8 @@
 import pygame
-from pygame_backend.managers import EventManager, FramerateManager, WindowManager
-from pygame_backend.objects import Container
 
+from pygame_backend.managers import (EventManager, FramerateManager,
+                                     WindowManager)
+from pygame_backend.objects import Container
 from pygame_backend.program import Program
 
 

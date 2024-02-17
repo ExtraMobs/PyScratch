@@ -1,20 +1,10 @@
 import pygame
 
-from .generics import (
-    typeContainer,
-    typeDrawManager,
-    typeEventManager,
-    typeFramerateManager,
-    typeProcessManager,
-    typeWindowManager,
-)
-from .managers import (
-    DrawManager,
-    EventManager,
-    FramerateManager,
-    ProcessManager,
-    WindowManager,
-)
+from .generics import (typeContainer, typeDrawManager, typeEventManager,
+                       typeFramerateManager, typeProcessManager,
+                       typeWindowManager)
+from .managers import (DrawManager, EventManager, FramerateManager,
+                       ProcessManager, WindowManager)
 
 
 class Program:

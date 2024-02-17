@@ -1,5 +1,8 @@
 from collections import defaultdict
+
 import pygame
+
+from pygame_backend.generics import typePygameWindow
 
 from .enums import CustomEvents
 
@@ -37,7 +40,7 @@ class DrawManager:
 
 
 class WindowManager:
-    def __init__(self, pygame_window: pygame.Window) -> None:
+    def __init__(self, pygame_window: typePygameWindow) -> None:
         self.pygame_window = pygame_window
         self.display_surface = pygame_window.get_surface()
         self.background_color = (0, 0, 0)
