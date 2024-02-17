@@ -1,8 +1,9 @@
 import pygame
+from pygame_backend.generics import typeIterableProcessableObjects
 
 from pygame_backend.managers import (EventManager, FramerateManager,
                                      WindowManager)
-from pygame_backend.objects import Container
+from pygame_backend.objects import Container, DrawableObject, ProcessableObject
 from pygame_backend.program import Program
 
 
@@ -18,15 +19,19 @@ class PyScratch(Program):
 
         self.run_loop()
 
-    def set_scene(self, scene: Container) -> None:
-        super().set_scene(scene)
-
-        scene.unpack()
-
 
 class EditorScene(Container):
-    def unpack(self) -> None:
-        pass
+    def __init__(self, program: Program) -> None:
+        super().__init__(program)
+        print(self.draw_manager.to_draw)
+
+        self.clear()
+
+        print(self.draw_manager.to_draw)
+
+
+    def unpack(self) -> typeIterableProcessableObjects: 
+        return ProcessableObject(self.program), DrawableObject(self.program)
 
 
 PyScratch()

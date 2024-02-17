@@ -1,13 +1,13 @@
 import pygame
 
 from .generics import (typeDrawManager, typeEventManager, typeFramerateManager,
-                       typeProcessManager, typeProgram, typeWindowManager)
+                       typeIterableProcessableObjects, typeProcessManager,
+                       typeProgram, typeWindowManager)
 
 
-class ProcessableObject:
-    @property
-    def process_priority(self) -> int:
-        return self.process_manager.to_process.index(self)
+class ProgramObject:
+    def __init__(self, program: typeProgram) -> None:
+        self.program = program
 
     @property
     def process_manager(self) -> typeProcessManager:
@@ -33,18 +33,24 @@ class ProcessableObject:
     def display_surface(self) -> pygame.Surface:
         return self.window_manager.display_surface
 
+
+class ProcessableObject(ProgramObject):
+    @property
+    def process_priority(self) -> int:
+        return self.process_manager.to_process.index(self)
+
     def __init__(self, program: typeProgram) -> None:
-        self.program = program
+        super().__init__(program)
         self.process_manager.to_process.append(self)
 
     def destroy(self) -> None:
-        while (index := self.process_manager.to_process.index(self)) != -1:
-            del self.process_manager.to_process[index]
+        self.process_manager.to_process.remove(self)
 
-    def process(self) -> None: ...
+    def process(self) -> None:
+        pass
 
 
-class GraphicObject(ProcessableObject):
+class DrawableObject(ProcessableObject):
     @property
     def draw_priority(self) -> int:
         return self.draw_manager.to_draw.index(self)
@@ -55,15 +61,22 @@ class GraphicObject(ProcessableObject):
 
     def destroy(self) -> None:
         super().destroy()
-        while (index := self.draw_manager.to_draw.index(self)) != -1:
-            del self.draw_manager.to_draw[index]
+        self.draw_manager.to_draw.remove(self)
 
-    def draw(self) -> None: ...
+    def draw(self) -> None:
+        pass
 
 
-class Container:
+class Container(ProgramObject):
+    program_objects: typeIterableProcessableObjects
+
     def __init__(self, program: typeProgram) -> None:
         self.program = program
+        self.program_objects = self.unpack()
 
-    def unpack(self) -> None:
-        pass
+    def clear(self) -> None:
+        for object in self.program_objects:
+            object.destroy()
+
+    def unpack(self) -> typeIterableProcessableObjects:
+        return ()
