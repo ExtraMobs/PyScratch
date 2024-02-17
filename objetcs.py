@@ -53,3 +53,11 @@ class GraphicObject(ProcessableObject):
             del self.draw_manager.to_draw[index]
 
     def draw(self): ...
+
+
+class Container:
+    def __init__(self, program):
+        self.program = program
+
+    def unpack(self):
+        pass

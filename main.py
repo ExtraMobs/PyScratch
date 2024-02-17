@@ -1,6 +1,6 @@
 import pygame
 from managers import EventManager, FramerateManager, WindowManager
-from objetcs import GraphicObject
+from objetcs import Container
 from program import Program
 
 
@@ -12,24 +12,19 @@ class PyScratch(Program):
             FramerateManager(60),
         )
 
-        self.shape = Shape(self)
+        self.set_scene(EditorScene(self))
 
         self.run_loop()
 
+    def set_scene(self, scene):
+        super().set_scene(scene)
 
-class Shape(GraphicObject):
-    def __init__(self, program):
-        super().__init__(program)
-        self.surface = pygame.Surface((50, 50))
-        pygame.draw.polygon(
-            self.surface, (255, 255, 255), [(0, 0), (10, 27), (50, 0), (41, 13)]
-        )
+        scene.unpack(self)
 
-    def process(self):
-        print("test")
 
-    def draw(self):
-        self.display_surface.blit(self.surface, (0, 0))
+class EditorScene(Container):
+    def unpack(self):
+        pass
 
 
 PyScratch()

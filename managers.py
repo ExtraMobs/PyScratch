@@ -40,10 +40,11 @@ class WindowManager:
     def __init__(self, pygame_window):
         self.pygame_window = pygame_window
         self.display_surface = pygame_window.get_surface()
+        self.background_color = (0, 0, 0)
 
     def update_display(self):
         self.pygame_window.flip()
-        self.display_surface.fill((0, 0, 0))
+        self.display_surface.fill(self.background_color)
 
 
 class FramerateManager:

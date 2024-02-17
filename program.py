@@ -4,12 +4,17 @@ from managers import DrawManager, ProcessManager
 
 class Program:
     def __init__(self, window_manager, event_manager, framerate_manager):
+        self.scene = None
+
         self.event_manager = event_manager
         self.window_manager = window_manager
         self.framerate_manager = framerate_manager
 
         self.process_manager = ProcessManager()
         self.draw_manager = DrawManager()
+
+    def set_scene(self, scene):
+        self.scene = scene
 
     def run_loop(self):
         while True:
